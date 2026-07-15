@@ -1,0 +1,21 @@
+# Environment variables and secrets
+.env
+
+# IntelliJ/IDE settings
+.idea/
+*.iml
+*.iws
+*.ipr
+.settings/
+.project
+.classpath
+.factorypath
+
+# Maven build output
+**/target/
+*.jar
+*.war
+*.ear
+
+# Logs
+*.log

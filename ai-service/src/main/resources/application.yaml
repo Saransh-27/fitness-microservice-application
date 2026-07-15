@@ -1,0 +1,17 @@
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  application:
+    name: AI-SERVICE
+  mongodb:
+    uri: ${MONGO_URI2}
+    database: ai_recommendations_db
+    auto-index-creation: true
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+server:
+  port: 8082
