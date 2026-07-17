@@ -1,5 +1,6 @@
 package com.microservice.project.ai_service.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class GeminiService {
 
     @Value("${Gemini.api.url}")
@@ -22,6 +24,7 @@ public class GeminiService {
     }
 
     public String getAnswer(String question){
+        log.info("Making the API call to AI.........");
         Map<String, Object> requestBody = Map.of(
                 "contents", new Object[]{
                         Map.of("parts", new Object[]{
@@ -38,6 +41,7 @@ public class GeminiService {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block());
+        log.info("API call SUCCEEDED.....");
         return response;
     }
 }
