@@ -1,6 +1,4 @@
 spring:
-  config:
-    import: optional:file:.env[.properties]
   mongodb:
     uri: ${MONGO_URI2}
     database: ai_recommendations_db

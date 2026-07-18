@@ -1,8 +1,4 @@
 spring:
-  config:
-    import: optional:file:.env[.properties]
-
-
   mongodb:
     uri: ${MONGO_URI}
     database: fitness_activity_db
