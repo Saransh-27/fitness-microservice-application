@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: api-gateway
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8181/realms/fitness-oauth2/protocol/openid-connect/certs
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      server:
+        webflux:
+          routes:
+            # User Microservice Route
+            - id: user-service
+              uri: lb://USER-SERVICE
+              predicates:
+                - Path=/apis/users/**
+
+            # Fitness Activity Microservice Route
+            - id: activity-service
+              uri: lb://ACTIVITY-SERVICE
+              predicates:
+                - Path=/apis/activities/**
+
+            # AI Activity Microservice Route
+            - id: activity-service
+              uri: lb://AI-SERVICE
+              predicates:
+                - Path=/apis/recommendation/**
+server:
+  port: 8083
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+logging:
+  level:
+    org.springframework.cloud.gateway: TRACE
+    org.springframework.cloud.loadbalancer: TRACE
+    reactor.netty.http.client: DEBUG
