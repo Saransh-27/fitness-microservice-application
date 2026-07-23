@@ -25,19 +25,10 @@ public class UserController {
     private UserRepository userRepository;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody UserRequestDto dto){
-        User userinfo = userRepository.findByEmail(dto.getEmail());
-        if (userinfo != null) {
-            return ResponseEntity.badRequest().body("Email already exists");
-        }
-        try {
-            UserResponseDto userSaved = userService.register(dto);
-            log.info("User registered successfully");
-            return ResponseEntity.ok(userSaved);
-        } catch (Exception e) {
-            log.error("User registration failed");
-        }
-        return null;
+    public ResponseEntity<UserResponseDto> register(@RequestBody UserRequestDto dto){
+        log.info("Registration request received for email: {}, keycloakId: {}", dto.getEmail(), dto.getKeycloakId());
+        UserResponseDto userSaved = userService.register(dto);
+        return ResponseEntity.ok(userSaved);
     }
 
     @GetMapping("/{id}")
