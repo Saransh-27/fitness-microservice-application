@@ -24,7 +24,6 @@ public class ActivityAIService {
         String prompt = createPromptForActivity(activity);
         String aiResponse = geminiService.getAnswer(prompt);
         log.info("AI Response is {}", aiResponse);
-        processAiResponse(activity, aiResponse);
         return processAiResponse(activity, aiResponse);
     }
 
@@ -33,19 +32,18 @@ public class ActivityAIService {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode rootNode = mapper.readTree(aiResponse);
 
-            JsonNode textNode = rootNode.path("candidates")
-                    .get(0)
-                    .path("content")
-                    .path("parts")
-                    .get(0)
-                    .path("text");
+            // Extract text content from either Gemini or Groq format
+            String textContent = extractTextFromResponse(rootNode);
+            
+            if (textContent == null || textContent.isEmpty()) {
+                log.warn("No text content extracted from AI response");
+                return createDefaultRecommendation(activity);
+            }
 
-            String jsonContent = textNode.asString()
+            String jsonContent = textContent
                     .replaceAll("```json\\n","")
                     .replaceAll("\\n```", "")
                     .trim();
-
-//            log.info("AI PARSED Response is {}", jsonContent);
 
             JsonNode analysisJson = mapper.readTree(jsonContent);
             JsonNode analysisNode = analysisJson.path("analysis");
@@ -71,9 +69,52 @@ public class ActivityAIService {
                     .build();
         }catch (Exception e){
             e.printStackTrace();
-            log.error("Error occurred while processing AI response");
+            log.error("Error occurred while processing AI response: {}", e.getMessage());
             return createDefaultRecommendation(activity);
         }
+    }
+
+    private String extractTextFromResponse(JsonNode rootNode) {
+        // Try Gemini format first
+        try {
+            JsonNode candidatesNode = rootNode.path("candidates");
+            if (candidatesNode.isArray() && candidatesNode.size() > 0) {
+                JsonNode geminiText = candidatesNode
+                        .get(0)
+                        .path("content")
+                        .path("parts")
+                        .get(0)
+                        .path("text");
+                
+                if (!geminiText.isMissingNode() && geminiText.isTextual()) {
+                    log.info("Parsed response using GEMINI format");
+                    return geminiText.asString();
+                }
+            }
+        } catch (Exception e) {
+            log.debug("Gemini format parsing failed: {}", e.getMessage());
+        }
+
+        // Try Groq format
+        try {
+            JsonNode choicesNode = rootNode.path("choices");
+            if (choicesNode.isArray() && choicesNode.size() > 0) {
+                JsonNode groqText = choicesNode
+                        .get(0)
+                        .path("message")
+                        .path("content");
+                
+                if (!groqText.isMissingNode() && groqText.isTextual()) {
+                    log.info("Parsed response using GROQ format");
+                    return groqText.asString();
+                }
+            }
+        } catch (Exception e) {
+            log.debug("Groq format parsing failed: {}", e.getMessage());
+        }
+
+        log.warn("Could not extract text from either Gemini or Groq response format");
+        return null;
     }
 
     private Recommendation createDefaultRecommendation(Activity activity) {
