@@ -12,6 +12,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserRequestDto {
+    private String keycloakId;
     private String username;
     @Column(nullable = false)
     private String password;

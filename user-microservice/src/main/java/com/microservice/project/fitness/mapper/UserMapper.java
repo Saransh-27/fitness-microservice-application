@@ -12,6 +12,7 @@ public class UserMapper {
     // Request → Entity
     public static User toEntity(UserRequestDto dto) {
         User user = new User();
+        user.setKeycloakId(dto.getKeycloakId());
         user.setUsername(dto.getUsername());
         user.setEmail(dto.getEmail());
         user.setFrontname(dto.getFrontname());
@@ -23,6 +24,7 @@ public class UserMapper {
     public static UserResponseDto toResponse(User user) {
         return UserResponseDto.builder()
                 .id(user.getId())
+                .keycloakId(user.getKeycloakId())
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .role(user.getRole())

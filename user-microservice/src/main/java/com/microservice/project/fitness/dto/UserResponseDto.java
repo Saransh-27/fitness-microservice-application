@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 public class UserResponseDto {
     private String id;
+    private String keycloakId;
     private String username;
     private String password;
     @Builder.Default
