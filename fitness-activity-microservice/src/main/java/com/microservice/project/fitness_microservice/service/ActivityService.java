@@ -46,4 +46,15 @@ public class ActivityService {
                 .map(ActivityMapper::toResponse)
                 .orElseThrow(() -> new RuntimeException("Activity not found with id: " + id));
     }
+
+    public String deleteById(String id) {
+        try{
+            Activity activity = activityRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Activity not found with id: " + id));
+            activityRepository.delete(activity);
+            return "Activity deleted successfully with id: " + id;
+        }catch (Exception e){
+            return new RuntimeException("Error deleting activity with id: " + id + ". Error: " + e.getMessage()).getMessage();
+        }
+    }
 }
