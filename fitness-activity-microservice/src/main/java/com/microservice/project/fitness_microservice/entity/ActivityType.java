@@ -5,8 +5,6 @@ public enum ActivityType {
     CYCLING,
     JOGGING,
     SWIMMING,
-    FUCKING,
-    SUCKING,
     WALKING,
     HIKING,
     YOGA,
