@@ -56,6 +56,7 @@ public class ActivityAIService {
             List<String> improvements =extractImprovements(analysisJson.path("improvements"));
             List<String> suggestions =extractSuggestions(analysisJson.path("suggestions"));
             List<String> safety =extractSafetyGuidelines(analysisJson.path("safety"));
+            List<String> achievement =extractAchievements(analysisJson.path("achievements"));
 
             return Recommendation.builder()
                     .activityId(activity.getId())
@@ -65,6 +66,7 @@ public class ActivityAIService {
                     .improvements(improvements)
                     .suggestions(suggestions)
                     .safety(safety)
+                    .achievements(achievement)
                     .createdAt(LocalDateTime.now())
                     .build();
         }catch (Exception e){
@@ -169,6 +171,18 @@ public class ActivityAIService {
                 Collections.singletonList("No improvements found") : improvements;
     }
 
+    private List<String> extractAchievements(JsonNode achievementsNode) {
+        List<String> achievements = new ArrayList<>();
+        if (achievementsNode.isArray()){
+            achievementsNode.forEach(improvementNode -> {
+                String description = improvementNode.path("description").asString();
+                achievements.add(String.format("%s: ", description));
+            });
+        }
+        return achievements.isEmpty()?
+                Collections.singletonList("No achievements found") : achievements;
+    }
+
     private void addAnalysisSection(StringBuilder fullAnalysis, JsonNode analysisNode, String key, String prefix) {
        if (!analysisNode.path(key).isMissingNode()){
            fullAnalysis.append(prefix)
@@ -202,6 +216,9 @@ public class ActivityAIService {
           "safety": [
             "Safety point 1",
             "Safety point 2"
+          ]
+          "achievements": [
+            "description": "Detailed achievement based on the activity"
           ]
         }
 
