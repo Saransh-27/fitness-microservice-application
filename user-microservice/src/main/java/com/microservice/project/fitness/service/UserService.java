@@ -47,7 +47,14 @@ public class UserService {
     }
 
     public UserResponseDto updateUser(String id, UserUpdateDto dto) {
+        // Try by PostgreSQL UUID first, then by keycloakId
         Optional<User> userOpt = userRepository.findById(id);
+        if (userOpt.isEmpty()) {
+            User byKeycloak = userRepository.findByKeycloakId(id);
+            if (byKeycloak != null) {
+                userOpt = Optional.of(byKeycloak);
+            }
+        }
         if (userOpt.isPresent()) {
             User user = userOpt.get();
             if (dto.getUsername() != null) {
