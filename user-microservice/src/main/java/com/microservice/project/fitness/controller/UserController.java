@@ -33,12 +33,17 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable String id) {
+        // Try finding by PostgreSQL UUID first
         Optional<User> userOpt = userRepository.findById(id);
         if (userOpt.isPresent()) {
             return ResponseEntity.ok(userOpt.get());
-        } else {
-            return ResponseEntity.notFound().build();
         }
+        // Fallback: try finding by keycloakId (frontend passes Keycloak sub claim)
+        User userByKeycloak = userRepository.findByKeycloakId(id);
+        if (userByKeycloak != null) {
+            return ResponseEntity.ok(userByKeycloak);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping
