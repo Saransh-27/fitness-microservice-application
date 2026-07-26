@@ -23,6 +23,10 @@ public class KeycloakUserSyncFilter implements WebFilter {
     private final UserService userService;
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+        if (org.springframework.http.HttpMethod.OPTIONS.equals(exchange.getRequest().getMethod())) {
+            return chain.filter(exchange);
+        }
+
         String authHeader = exchange.getRequest().getHeaders().getFirst("Authorization");
         String userIdHeader = exchange.getRequest().getHeaders().getFirst("X-User-ID");
 
