@@ -27,8 +27,17 @@ public class ActivityController {
 
     @GetMapping
     public ResponseEntity<?> getAllActivities(@RequestParam(defaultValue = "0") int page,
-                                              @RequestParam(defaultValue = "20") int size) {
+                                              @RequestParam(defaultValue = "20") int size,
+                                              @RequestHeader(value = "X-User-ID", required = false) String headerUserId,
+                                              @RequestParam(value = "userId", required = false) String paramUserId) {
         Pageable pageable = PageRequest.of(page, size);
+        String userId = (headerUserId != null && !headerUserId.isBlank())
+                ? headerUserId
+                : paramUserId;
+
+        if (userId != null && !userId.isBlank()) {
+            return ResponseEntity.ok(activityRepository.findByUserid(userId, pageable));
+        }
         return ResponseEntity.ok(activityRepository.findAll(pageable));
     }
 
@@ -39,9 +48,6 @@ public class ActivityController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteActivityById(@PathVariable String id) {
-
         return ResponseEntity.ok(activityService.deleteById(id));
-
     }
 }
-
