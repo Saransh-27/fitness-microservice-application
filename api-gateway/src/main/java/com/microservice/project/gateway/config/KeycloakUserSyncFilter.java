@@ -6,9 +6,6 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
@@ -16,11 +13,23 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 @Component
 @Slf4j
 @RequiredArgsConstructor
 public class KeycloakUserSyncFilter implements WebFilter {
     private final UserService userService;
+
+    /**
+     * In-memory cache of validated user IDs.
+     * Key: keycloakId/userId, Value: timestamp (ms) when validated.
+     * Entries expire after CACHE_TTL_MS to allow eventual re-checks.
+     */
+    private final Map<String, Long> validatedUsersCache = new ConcurrentHashMap<>();
+    private static final long CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         if (org.springframework.http.HttpMethod.OPTIONS.equals(exchange.getRequest().getMethod())) {
@@ -39,17 +48,30 @@ public class KeycloakUserSyncFilter implements WebFilter {
             return chain.filter(exchange);
         }
 
-        String userId = (userIdHeader != null && !userIdHeader.isBlank()) 
-                ? userIdHeader 
+        String userId = (userIdHeader != null && !userIdHeader.isBlank())
+                ? userIdHeader
                 : registerRequest.getKeycloakId();
+
+        // Check in-memory cache first to avoid redundant HTTP calls
+        Long cachedAt = validatedUsersCache.get(userId);
+        if (cachedAt != null && (System.currentTimeMillis() - cachedAt) < CACHE_TTL_MS) {
+            // User was recently validated — skip the remote call
+            ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
+                    .header("X-User-ID", userId)
+                    .build();
+            return chain.filter(exchange.mutate().request(mutatedRequest).build());
+        }
 
         return userService.validateUser(userId)
                 .flatMap(exist -> {
                     if (Boolean.FALSE.equals(exist)) {
                         log.info("User {} not found in database. Triggering automatic registration sync...", userId);
-                        return userService.registerUser(registerRequest).then(Mono.empty());
+                        return userService.registerUser(registerRequest)
+                                .doOnSuccess(u -> validatedUsersCache.put(userId, System.currentTimeMillis()))
+                                .then(Mono.empty());
                     } else {
-                        log.info("User {} already exists in database. Skipping registration sync.", userId);
+                        log.info("User {} validated and cached.", userId);
+                        validatedUsersCache.put(userId, System.currentTimeMillis());
                         return Mono.empty();
                     }
                 })
