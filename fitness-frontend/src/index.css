@@ -1,0 +1,155 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    /* Light mode fallback - crisp clean modern slate with electric blue accents */
+    --background: 220 20% 97%;
+    --foreground: 228 35% 8%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 228 35% 8%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 228 35% 8%;
+
+    --primary: 236 76% 48%; /* Electric Cobalt Blue #1E2BD9 */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 69 100% 49%; /* Cyber Lime #D8FC00 */
+    --secondary-foreground: 240 33% 3%;
+
+    --accent: 255 85% 65%; /* Vibrant Purple #A02AF8 */
+    --accent-foreground: 0 0% 100%;
+
+    --muted: 220 14% 93%;
+    --muted-foreground: 220 9% 46%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 13% 88%;
+    --input: 220 13% 88%;
+    --ring: 236 76% 48%;
+
+    --radius: 1.25rem;
+
+    --sidebar: 0 0% 100%;
+    --sidebar-foreground: 228 35% 8%;
+    --sidebar-primary: 236 76% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-border: 220 13% 88%;
+  }
+
+  .dark {
+    /* Shakuro FitGuide Aesthetic: OLED Pitch Black + Electric Indigo + Cyber Lime */
+    --background: 240 33% 3%; /* #05060A Pitch Void Black */
+    --foreground: 0 0% 98%; /* #FAFAFA Pure Crisp White */
+
+    --card: 226 36% 8%; /* #0B0E17 Deep Obsidian Blue Card */
+    --card-foreground: 0 0% 98%;
+
+    --popover: 226 36% 8%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 69 100% 49%; /* Cyber Lime #D8FC00 Accent */
+    --primary-foreground: 240 33% 3%; /* Pure Obsidian Text on Lime */
+
+    --secondary: 236 76% 48%; /* Vibrant Indigo Blue #1E2BD9 */
+    --secondary-foreground: 0 0% 100%;
+
+    --accent: 270 95% 57%; /* Cyber Purple #A02AF8 */
+    --accent-foreground: 0 0% 100%;
+
+    --muted: 226 25% 14%; /* #141926 Muted Dark Surface */
+    --muted-foreground: 220 15% 65%; /* #94A3B8 Soft Silver Muted Text */
+
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 226 22% 16%; /* #1A2130 Subtle Border */
+    --input: 226 22% 16%;
+    --ring: 69 100% 49%;
+
+    --sidebar: 240 33% 4%; /* #06080E Pitch Sidebar */
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 69 100% 49%;
+    --sidebar-primary-foreground: 240 33% 3%;
+    --sidebar-border: 226 22% 14%;
+  }
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+}
+
+/* Glassmorphism & Custom FitGuide Effects */
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(226, 232, 240, 0.6);
+}
+
+.dark .glass-card {
+  background: rgba(11, 14, 23, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+/* Electric Indigo Card Banner */
+.bg-indigo-banner {
+  background: linear-gradient(135deg, #1E2BD9 0%, #0F17A0 100%);
+}
+
+/* Cyber Neon Lime Glowing Box Shadow & Utilities */
+.glow-lime {
+  box-shadow: 0 0 30px -5px rgba(216, 252, 0, 0.4);
+}
+
+.glow-cobalt {
+  box-shadow: 0 0 35px -5px rgba(30, 43, 217, 0.5);
+}
+
+.glow-purple {
+  box-shadow: 0 0 30px -5px rgba(160, 42, 248, 0.4);
+}
+
+.gradient-cyber-text {
+  background: linear-gradient(135deg, #D8FC00 0%, #1E2BD9 60%, #A02AF8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.bg-cyber-gradient {
+  background: linear-gradient(135deg, rgba(30, 43, 217, 0.2) 0%, rgba(216, 252, 0, 0.05) 50%, rgba(5, 6, 10, 0.95) 100%);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #05060A;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1E2436;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #D8FC00;
+}
+
