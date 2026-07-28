@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
@@ -24,12 +25,12 @@ public class SpringConfig {
     public SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) {
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(cors -> {})
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeExchange(exchanges -> exchanges
                         // Explicitly permit ALL HTTP OPTIONS preflight requests for CORS
                         .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        // Public health & actuator endpoints
-                        .pathMatchers("/health", "/actuator/**").permitAll()
+                        // Public health, actuator, and registration endpoints
+                        .pathMatchers("/health", "/actuator/**", "/apis/users/register", "/gateway/register").permitAll()
                         .anyExchange().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {}));
@@ -38,9 +39,8 @@ public class SpringConfig {
     }
 
     @Bean
-    public CorsWebFilter corsWebFilter() {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Allow all origin patterns (localhost:3000, localhost:5173, etc.)
         configuration.setAllowedOriginPatterns(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList(
                 "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"
@@ -52,6 +52,11 @@ public class SpringConfig {
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
-        return new CorsWebFilter(source);
+        return source;
+    }
+
+    @Bean
+    public CorsWebFilter corsWebFilter() {
+        return new CorsWebFilter(corsConfigurationSource());
     }
 }
