@@ -39,4 +39,17 @@ public class UserService {
                     return Mono.empty();
                 });
     }
+
+    public Mono<Void> deleteUser(String id) {
+        log.info("Calling User Service to delete user: {}", id);
+        return userServiceWebClient.delete()
+                .uri("/apis/users/{id}", id)
+                .retrieve()
+                .toBodilessEntity()
+                .then()
+                .onErrorResume(e -> {
+                    log.error("Error deleting user {} in user-microservice: {}", id, e.getMessage());
+                    return Mono.empty();
+                });
+    }
 }
