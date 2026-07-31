@@ -30,6 +30,13 @@ public class KeycloakUserSyncFilter implements WebFilter {
     private final Map<String, Long> validatedUsersCache = new ConcurrentHashMap<>();
     private static final long CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
+    public void evictUser(String userId) {
+        if (userId != null) {
+            validatedUsersCache.remove(userId);
+            log.info("Evicted user {} from KeycloakUserSyncFilter cache.", userId);
+        }
+    }
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         if (org.springframework.http.HttpMethod.OPTIONS.equals(exchange.getRequest().getMethod())) {
