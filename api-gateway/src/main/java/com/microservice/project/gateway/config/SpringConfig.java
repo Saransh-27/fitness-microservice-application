@@ -30,7 +30,7 @@ public class SpringConfig {
                         // Explicitly permit ALL HTTP OPTIONS preflight requests for CORS
                         .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         // Public health, actuator, and registration endpoints
-                        .pathMatchers("/health", "/actuator/**", "/apis/users/register", "/gateway/register").permitAll()
+                        .pathMatchers("/health", "/actuator/**", "/apis/users/register", "/gateway/register/**").permitAll()
                         .anyExchange().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {}));
