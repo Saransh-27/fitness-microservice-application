@@ -20,9 +20,9 @@ export const userService = {
     return data;
   },
 
-  /** DELETE /apis/users/{id} */
+  /** DELETE /gateway/register/users/{id} */
   deleteUser: async (id: string): Promise<string> => {
-    const { data } = await api.delete<string>(`/apis/users/${id}`);
+    const { data } = await api.delete<string>(`/gateway/register/users/${id}`);
     return data;
   },
 

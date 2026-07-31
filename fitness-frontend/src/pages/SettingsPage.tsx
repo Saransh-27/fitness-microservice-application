@@ -9,18 +9,18 @@ import { userService } from "@/services/userService";
 import { toast } from "sonner";
 
 export function SettingsPage() {
-  const { theme, setTheme } = useTheme();
-  const { user } = useAuthStore();
+  const { user, keycloakId } = useAuthStore();
   const { logout } = useKeycloak();
   const [deleting, setDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const handleDeleteAccount = async () => {
-    if (!user?.id) return;
+    const targetId = keycloakId || user?.keycloakId || user?.id || user?.username;
+    if (!targetId) return;
     try {
       setDeleting(true);
-      await userService.deleteUser(user.id);
-      toast.success("Account deleted successfully.");
+      await userService.deleteUser(targetId);
+      toast.success("Account permanently deleted.");
       logout();
     } catch (error) {
       console.error("Failed to delete account:", error);
