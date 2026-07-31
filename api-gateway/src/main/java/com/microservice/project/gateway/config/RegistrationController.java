@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -134,6 +135,71 @@ public class RegistrationController {
                             HttpStatus.BAD_REQUEST,
                             "Failed to create user in Keycloak: " + msg
                     ));
+                });
+    }
+
+    private final KeycloakUserSyncFilter userSyncFilter;
+
+    @DeleteMapping("/users/{id}")
+    public Mono<ResponseEntity<String>> deleteUserPermanently(@PathVariable String id) {
+        log.info("Permanent deletion request for user/keycloakId: {}", id);
+
+        return getAdminToken()
+                .flatMap(adminToken -> deleteKeycloakUser(adminToken, id))
+                .then(userService.deleteUser(id))
+                .doOnSuccess(v -> {
+                    userSyncFilter.evictUser(id);
+                    log.info("User {} successfully deleted from both Keycloak and PostgreSQL database.", id);
+                })
+                .thenReturn(ResponseEntity.ok("User permanently deleted from Keycloak and database."));
+    }
+
+    private Mono<Void> deleteKeycloakUser(String adminToken, String targetId) {
+        String deleteUrl = keycloakUrl + "/admin/realms/" + keycloakRealm + "/users/" + targetId;
+
+        return keycloakWebClient.delete()
+                .uri(deleteUrl)
+                .header("Authorization", "Bearer " + adminToken)
+                .retrieve()
+                .toBodilessEntity()
+                .doOnSuccess(r -> log.info("Successfully deleted Keycloak user directly by ID '{}' (status: {})", targetId, r.getStatusCode()))
+                .then()
+                .onErrorResume(e -> {
+                    log.warn("Direct Keycloak deletion by ID '{}' failed ({}), searching Keycloak users list...", targetId, e.getMessage());
+                    return findAndDeleteKeycloakUser(adminToken, targetId);
+                });
+    }
+
+    @SuppressWarnings("unchecked")
+    private Mono<Void> findAndDeleteKeycloakUser(String adminToken, String searchTerm) {
+        String searchUrl = keycloakUrl + "/admin/realms/" + keycloakRealm + "/users?search=" + searchTerm;
+
+        return keycloakWebClient.get()
+                .uri(searchUrl)
+                .header("Authorization", "Bearer " + adminToken)
+                .retrieve()
+                .bodyToMono(List.class)
+                .flatMap(users -> {
+                    if (users == null || users.isEmpty()) {
+                        log.warn("No Keycloak user found matching search term '{}'", searchTerm);
+                        return Mono.empty();
+                    }
+                    Map<String, Object> userMap = (Map<String, Object>) users.get(0);
+                    String kcSubId = (String) userMap.get("id");
+                    log.info("Found Keycloak user '{}' with sub ID '{}'. Deleting from Keycloak now...", searchTerm, kcSubId);
+                    String deleteUrl = keycloakUrl + "/admin/realms/" + keycloakRealm + "/users/" + kcSubId;
+
+                    return keycloakWebClient.delete()
+                            .uri(deleteUrl)
+                            .header("Authorization", "Bearer " + adminToken)
+                            .retrieve()
+                            .toBodilessEntity()
+                            .doOnSuccess(r -> log.info("Keycloak user '{}' (ID: {}) successfully deleted", searchTerm, kcSubId))
+                            .then();
+                })
+                .onErrorResume(e -> {
+                    log.error("Failed during findAndDeleteKeycloakUser for '{}': {}", searchTerm, e.getMessage());
+                    return Mono.empty();
                 });
     }
 
