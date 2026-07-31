@@ -64,12 +64,22 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable String id) {
         try {
-            userRepository.deleteById(id);
+            log.info("Delete request for user id/keycloakId: {}", id);
+            Optional<User> userOpt = userRepository.findById(id);
+            if (userOpt.isPresent()) {
+                userRepository.delete(userOpt.get());
+                return ResponseEntity.status(HttpStatus.ACCEPTED).body("User deleted successfully");
+            }
+            User userByKeycloak = userRepository.findByKeycloakId(id);
+            if (userByKeycloak != null) {
+                userRepository.delete(userByKeycloak);
+                return ResponseEntity.status(HttpStatus.ACCEPTED).body("User deleted successfully");
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         } catch (Exception e) {
             log.error("Error deleting user with id {}: {}", id, e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting user");
         }
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body("User deleted successfully");
     }
 
     @GetMapping("/{userId}/validate")
