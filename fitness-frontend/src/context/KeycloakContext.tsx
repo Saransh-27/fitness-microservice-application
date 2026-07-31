@@ -4,6 +4,7 @@ import {
   useEffect,
   useState,
   useCallback,
+  useRef,
   type ReactNode,
 } from "react";
 import keycloak, { getKeycloakConfig } from "../services/keycloak";
@@ -16,6 +17,7 @@ interface KeycloakContextValue {
   initialized: boolean;
   authenticated: boolean;
   login: () => void;
+  loginSocial: (provider: "google" | "github") => void;
   loginDirect: (username: string, password?: string) => Promise<boolean>;
   registerDirect: (userDto: {
     username: string;
@@ -32,6 +34,7 @@ const KeycloakContext = createContext<KeycloakContextValue>({
   initialized: false,
   authenticated: false,
   login: () => {},
+  loginSocial: () => {},
   loginDirect: async () => false,
   registerDirect: async () => false,
   logout: () => {},
@@ -41,6 +44,7 @@ const KeycloakContext = createContext<KeycloakContextValue>({
 export function KeycloakProvider({ children }: { children: ReactNode }) {
   const [initialized, setInitialized] = useState(false);
   const { setAuth, clearAuth } = useAuthStore();
+  const isInitializedRef = useRef(false);
 
   const syncUser = useCallback(async () => {
     if (!keycloak.authenticated || !keycloak.tokenParsed) return;
@@ -76,18 +80,29 @@ export function KeycloakProvider({ children }: { children: ReactNode }) {
   }, [setAuth]);
 
   useEffect(() => {
+    if (isInitializedRef.current) return;
+    isInitializedRef.current = true;
+
     keycloak
       .init({
         onLoad: "check-sso",
         silentCheckSsoRedirectUri:
           window.location.origin + "/silent-check-sso.html",
         pkceMethod: "S256",
+        checkLoginIframe: false,
       })
-      .then((authenticated) => {
-        setInitialized(true);
+      .then(async (authenticated) => {
         if (authenticated) {
-          syncUser();
+          await syncUser();
+          if (
+            window.location.pathname === "/login" ||
+            window.location.pathname === "/register" ||
+            window.location.pathname === "/"
+          ) {
+            window.history.replaceState({}, document.title, "/dashboard");
+          }
         }
+        setInitialized(true);
       })
       .catch((err) => {
         console.warn("Keycloak SSO init (server may be offline):", err);
@@ -112,6 +127,16 @@ export function KeycloakProvider({ children }: { children: ReactNode }) {
     keycloak.login().catch((err) => {
       console.error("Keycloak login redirect error:", err);
     });
+  }, []);
+
+  const loginSocial = useCallback((provider: "google" | "github") => {
+    keycloak
+      .login({
+        idpHint: provider,
+      })
+      .catch((err) => {
+        console.error(`Keycloak ${provider} social login error:`, err);
+      });
   }, []);
 
   const loginDirect = useCallback(
@@ -140,6 +165,11 @@ export function KeycloakProvider({ children }: { children: ReactNode }) {
       }
 
       if (!res.ok) {
+        if (res.status === 403) {
+          throw new Error(
+            "Keycloak 403 Forbidden: In Keycloak Admin Console -> Clients -> oauth2-pkce-client, set 'Client authentication' to OFF and enable 'Direct access grants'."
+          );
+        }
         const errorData = await res.json().catch(() => ({}));
         const message =
           errorData.error_description ||
@@ -264,6 +294,7 @@ export function KeycloakProvider({ children }: { children: ReactNode }) {
         initialized,
         authenticated: Boolean(isAuthenticated),
         login,
+        loginSocial,
         loginDirect,
         registerDirect,
         logout,
