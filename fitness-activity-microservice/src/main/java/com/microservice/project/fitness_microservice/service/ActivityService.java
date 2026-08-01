@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Slf4j
 @Service
 public class ActivityService {
@@ -55,6 +57,19 @@ public class ActivityService {
             return "Activity deleted successfully with id: " + id;
         }catch (Exception e){
             return new RuntimeException("Error deleting activity with id: " + id + ". Error: " + e.getMessage()).getMessage();
+        }
+    }
+
+    public String deleteAllByUserId(String userid) {
+        try{
+            List<Activity> activities = activityRepository.findByUserid(userid);
+            if (activities == null || activities.isEmpty()) {
+                return "No activities found for user with id: " + userid;
+            }
+            activityRepository.deleteAll(activities);
+            return "All activities deleted successfully for user with id: " + userid;
+        }catch (Exception e){
+            return new RuntimeException("Error deleting activities for user with id: " + userid + ". Error: " + e.getMessage()).getMessage();
         }
     }
 }

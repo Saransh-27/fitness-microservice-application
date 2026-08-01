@@ -50,4 +50,9 @@ public class ActivityController {
     public ResponseEntity<?> deleteActivityById(@PathVariable String id) {
         return ResponseEntity.ok(activityService.deleteById(id));
     }
+
+    @DeleteMapping("/all/{userid}")
+    public ResponseEntity<?> deleteAllActivityByUserId(@PathVariable String userid) {
+        return ResponseEntity.status(202).body(activityService.deleteAllByUserId(userid));
+    }
 }
