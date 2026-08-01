@@ -65,7 +65,7 @@ export function RegisterPage() {
             <Dumbbell className="w-6 h-6" />
           </div>
           <h1 className="text-2xl font-black text-white tracking-tight">
-            Create Fit<span className="text-[#D8FC00]">Guide</span> Account
+            Create FitPulse <span className="text-[#D8FC00]">OS</span> Account
           </h1>
           <p className="text-xs text-slate-400">
             Start tracking your workout telemetry with AI recommendations

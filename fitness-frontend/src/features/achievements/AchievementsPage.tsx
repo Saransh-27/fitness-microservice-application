@@ -53,7 +53,7 @@ export function AchievementsPage() {
     {
       id: "first_workout",
       title: "First Step",
-      description: "Log your first workout telemetry in FitGuide",
+      description: "Log your first workout telemetry in FitPulse OS",
       icon: "🏃",
       unlocked: totalWorkouts >= 1,
       progress: Math.min(100, (totalWorkouts / 1) * 100),

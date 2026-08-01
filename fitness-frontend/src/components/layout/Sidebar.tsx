@@ -92,10 +92,10 @@ export function Sidebar({ className }: { className?: string }) {
             </div>
             <div>
               <span className="font-extrabold text-xl tracking-tight text-white flex items-center gap-1.5 font-['Plus_Jakarta_Sans']">
-                Fit<span className="text-[#D8FC00]">Guide</span>
+                FitPulse <span className="text-[#D8FC00]">OS</span>
               </span>
               <span className="text-[11px] text-slate-400 block -mt-0.5 font-medium">
-                Adaptive Workout AI
+                Microservice AI Telemetry
               </span>
             </div>
           </Link>

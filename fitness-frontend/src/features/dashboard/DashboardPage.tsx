@@ -117,13 +117,13 @@ export function DashboardPage() {
 
   return (
     <div className="space-y-8 animate-in fade-in-50 pb-8">
-      {/* Header Banner - FitGuide Dark Blue Hero Section */}
+      {/* Header Banner - FitPulse OS Hero Section */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#1E2BD9] via-[#141A99] to-[#0A0D1A] p-6 md:p-8 border border-[#1E2BD9]/40 shadow-2xl">
         <div className="absolute -right-10 -bottom-10 w-64 h-64 bg-[#D8FC00]/15 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2 max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#D8FC00] text-[#05060A] font-extrabold text-xs tracking-wider uppercase">
-              <Zap className="w-3.5 h-3.5 fill-[#05060A]" /> FitGuide Adaptive AI Engine
+              <Zap className="w-3.5 h-3.5 fill-[#05060A]" /> FitPulse OS Adaptive AI Engine
             </div>
             <h1 className="text-3xl md:text-4xl font-black tracking-tight text-white font-['Plus_Jakarta_Sans'] leading-tight">
               Get Your Fit,{" "}

@@ -54,8 +54,8 @@ export function LoginPage() {
           <div className="w-12 h-12 mx-auto rounded-2xl bg-[#1E2BD9] text-[#D8FC00] flex items-center justify-center shadow-lg shadow-[#1E2BD9]/30 border border-[#1E2BD9]/50">
             <Dumbbell className="w-6 h-6" />
           </div>
-          <h1 className="text-2xl font-black text-white tracking-tight">
-            Fit<span className="text-[#D8FC00]">Guide</span>
+          <h1 className="text-3xl font-black text-white tracking-tight flex items-center justify-center gap-2">
+            FitPulse <span className="text-[#D8FC00]">OS</span>
           </h1>
           <p className="text-xs text-slate-400">
             Sign in to access your telemetry & AI health insights

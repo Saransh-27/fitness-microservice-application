@@ -10,7 +10,7 @@ export function LoadingScreen({ message = "Initializing Fitness Telemetry Engine
         </div>
         <div>
           <h3 className="font-bold text-lg text-foreground flex items-center gap-2">
-            FitPulse SaaS <Sparkles className="w-4 h-4 text-purple-500 animate-spin" />
+            FitPulse OS <Sparkles className="w-4 h-4 text-purple-500 animate-spin" />
           </h3>
           <p className="text-xs text-muted-foreground mt-1 animate-pulse font-mono">
             {message}
