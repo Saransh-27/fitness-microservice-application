@@ -1,19 +1,26 @@
 package com.microservice.project.gateway.user;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class UserService {
     private final WebClient userServiceWebClient;
+    private final WebClient activityServiceWebClient;
+    private final WebClient aiServiceWebClient;
+
+    public UserService(
+            @Qualifier("userServiceWebClient") WebClient userServiceWebClient,
+            @Qualifier("activityServiceWebClient") WebClient activityServiceWebClient,
+            @Qualifier("aiServiceWebClient") WebClient aiServiceWebClient) {
+        this.userServiceWebClient = userServiceWebClient;
+        this.activityServiceWebClient = activityServiceWebClient;
+        this.aiServiceWebClient = aiServiceWebClient;
+    }
 
     public Mono<Boolean> validateUser(String userId) {
         log.info("Calling User Validation API for userId/keycloakId: {}", userId);
@@ -49,6 +56,32 @@ public class UserService {
                 .then()
                 .onErrorResume(e -> {
                     log.error("Error deleting user {} in user-microservice: {}", id, e.getMessage());
+                    return Mono.empty();
+                });
+    }
+
+    public Mono<Void> deleteAllActivity(String userid) {
+        log.info("Calling Activity Service to delete user's all activities: {}", userid);
+        return activityServiceWebClient.delete()
+                .uri("/apis/activities/all/{userid}", userid)
+                .retrieve()
+                .toBodilessEntity()
+                .then()
+                .onErrorResume(e -> {
+                    log.error("Error deleting all activities of user {} in activity-service: {}", userid, e.getMessage());
+                    return Mono.empty();
+                });
+    }
+
+    public Mono<Void> deleteAllAIRecommendation(String userid) {
+        log.info("Calling AI Service to delete user's AI recommendations: {}", userid);
+        return aiServiceWebClient.delete()
+                .uri("/apis/recommendation/activity/{userId}", userid)
+                .retrieve()
+                .toBodilessEntity()
+                .then()
+                .onErrorResume(e -> {
+                    log.error("Error deleting all AI recommendations of user {} in ai-service: {}", userid, e.getMessage());
                     return Mono.empty();
                 });
     }

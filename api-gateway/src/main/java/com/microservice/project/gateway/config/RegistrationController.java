@@ -146,6 +146,8 @@ public class RegistrationController {
 
         return getAdminToken()
                 .flatMap(adminToken -> deleteKeycloakUser(adminToken, id))
+                .then(userService.deleteAllAIRecommendation(id))
+                .then(userService.deleteAllActivity(id))
                 .then(userService.deleteUser(id))
                 .doOnSuccess(v -> {
                     userSyncFilter.evictUser(id);

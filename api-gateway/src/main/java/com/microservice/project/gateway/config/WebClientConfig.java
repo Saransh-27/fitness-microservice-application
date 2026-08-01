@@ -20,4 +20,20 @@ public class WebClientConfig {
                 .baseUrl("http://USER-SERVICE")
                 .build();
     }
+
+    @Bean
+    public WebClient activityServiceWebClient(WebClient.Builder webClientBuilder) {
+        return webClientBuilder
+                .clone()
+                .baseUrl("http://ACTIVITY-SERVICE")
+                .build();
+    }
+
+    @Bean
+    public WebClient aiServiceWebClient(WebClient.Builder webClientBuilder) {
+        return webClientBuilder
+                .clone()
+                .baseUrl("http://AI-SERVICE")
+                .build();
+    }
 }
