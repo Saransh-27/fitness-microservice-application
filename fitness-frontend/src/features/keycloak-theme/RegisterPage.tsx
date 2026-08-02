@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Dumbbell, User, Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { User, Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { useKeycloak } from "@/context/KeycloakContext";
 import { useAuthStore } from "@/store/useAuthStore";
 import { toast } from "sonner";
+import { FitPulseLogo } from "@/components/common/FitPulseLogo";
 
 export function RegisterPage() {
   const navigate = useNavigate();
@@ -61,9 +62,7 @@ export function RegisterPage() {
       <div className="w-full max-w-md space-y-6">
         {/* Brand Header */}
         <div className="text-center space-y-2">
-          <div className="w-12 h-12 mx-auto rounded-2xl bg-[#1E2BD9] text-[#D8FC00] flex items-center justify-center shadow-lg shadow-[#1E2BD9]/30 border border-[#1E2BD9]/50">
-            <Dumbbell className="w-6 h-6" />
-          </div>
+          <FitPulseLogo className="w-14 h-14 mx-auto rounded-2xl shadow-xl shadow-[#D8FC00]/10" />
           <h1 className="text-2xl font-black text-white tracking-tight">
             Create FitPulse <span className="text-[#D8FC00]">OS</span> Account
           </h1>

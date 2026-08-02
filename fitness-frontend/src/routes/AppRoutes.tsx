@@ -58,11 +58,16 @@ const ForgotPasswordPage = lazy(() =>
   }))
 );
 
-const { NotFoundPage, ForbiddenPage } = lazy(() =>
+const NotFoundPage = lazy(() =>
   import("@/pages/ErrorPages").then((m) => ({
-    default: m,
+    default: m.NotFoundPage,
   }))
-) as any;
+);
+const ForbiddenPage = lazy(() =>
+  import("@/pages/ErrorPages").then((m) => ({
+    default: m.ForbiddenPage,
+  }))
+);
 
 export function AppRoutes() {
   return (

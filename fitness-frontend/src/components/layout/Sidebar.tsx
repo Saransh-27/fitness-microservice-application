@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useKeycloak } from "@/context/KeycloakContext";
 import { ThemeToggle } from "@/theme/theme-toggle";
+import { FitPulseLogo } from "@/components/common/FitPulseLogo";
 
 interface NavItem {
   title: string;
@@ -87,8 +88,8 @@ export function Sidebar({ className }: { className?: string }) {
         {/* Brand Logo */}
         <div className="flex items-center justify-between px-2 py-1">
           <Link to="/dashboard" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-2xl bg-[#1E2BD9] flex items-center justify-center text-[#D8FC00] shadow-lg shadow-[#1E2BD9]/40 group-hover:scale-105 transition-transform duration-200 border border-[#1E2BD9]/60">
-              <Dumbbell className="w-5 h-5" />
+            <div className="w-10 h-10 group-hover:scale-105 transition-transform duration-200 shrink-0">
+              <FitPulseLogo className="w-10 h-10 rounded-2xl shadow-lg shadow-[#D8FC00]/10" />
             </div>
             <div>
               <span className="font-extrabold text-xl tracking-tight text-white flex items-center gap-1.5 font-['Plus_Jakarta_Sans']">

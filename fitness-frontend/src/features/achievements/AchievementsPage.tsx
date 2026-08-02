@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Award, Zap, Flame, Dumbbell, Sparkles, CheckCircle2, ShieldCheck, Trophy, Star, Bot } from "lucide-react";
+import { Award, Zap, Flame, Sparkles, CheckCircle2, ShieldCheck, Trophy, Star, Bot } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";

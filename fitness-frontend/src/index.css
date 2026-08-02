@@ -91,49 +91,6 @@
   }
 }
 
-/* Glassmorphism & Custom FitGuide Effects */
-.glass-card {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(226, 232, 240, 0.6);
-}
-
-.dark .glass-card {
-  background: rgba(11, 14, 23, 0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-}
-
-/* Electric Indigo Card Banner */
-.bg-indigo-banner {
-  background: linear-gradient(135deg, #1E2BD9 0%, #0F17A0 100%);
-}
-
-/* Cyber Neon Lime Glowing Box Shadow & Utilities */
-.glow-lime {
-  box-shadow: 0 0 30px -5px rgba(216, 252, 0, 0.4);
-}
-
-.glow-cobalt {
-  box-shadow: 0 0 35px -5px rgba(30, 43, 217, 0.5);
-}
-
-.glow-purple {
-  box-shadow: 0 0 30px -5px rgba(160, 42, 248, 0.4);
-}
-
-.gradient-cyber-text {
-  background: linear-gradient(135deg, #D8FC00 0%, #1E2BD9 60%, #A02AF8 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.bg-cyber-gradient {
-  background: linear-gradient(135deg, rgba(30, 43, 217, 0.2) 0%, rgba(216, 252, 0, 0.05) 50%, rgba(5, 6, 10, 0.95) 100%);
-}
-
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

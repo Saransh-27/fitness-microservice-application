@@ -1,13 +1,12 @@
 import { Link } from "react-router-dom";
-import { ArrowLeft, Dumbbell, AlertTriangle } from "lucide-react";
+import { ArrowLeft, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FitPulseLogo } from "@/components/common/FitPulseLogo";
 
 export function NotFoundPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 text-center bg-background">
-      <div className="w-16 h-16 rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-4">
-        <Dumbbell className="w-8 h-8" />
-      </div>
+      <FitPulseLogo className="w-16 h-16 rounded-2xl shadow-xl shadow-[#D8FC00]/10 mb-4" />
       <h1 className="text-6xl font-black text-purple-600 mb-2">404</h1>
       <h2 className="text-xl font-bold mb-2">Telemetry Node Not Found</h2>
       <p className="text-xs text-muted-foreground max-w-sm mb-6">
