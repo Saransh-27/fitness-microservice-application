@@ -35,13 +35,7 @@ const AchievementsPage = lazy(() =>
     default: m.AchievementsPage,
   }))
 );
-const AdminUsersPage = lazy(() =>
-  import("@/features/admin/AdminUsersPage").then((m) => ({
-    default: m.AdminUsersPage,
-  }))
-);
-
-// Keycloak Custom Theme Pages
+        {/* Error Fallback Routes */}
 const LoginPage = lazy(() =>
   import("@/features/keycloak-theme/LoginPage").then((m) => ({
     default: m.LoginPage,
@@ -90,13 +84,6 @@ export function AppRoutes() {
             <Route path="/workouts" element={<Navigate to="/activities" replace />} />
             <Route path="/meals" element={<Navigate to="/dashboard" replace />} />
             <Route path="/progress" element={<Navigate to="/dashboard" replace />} />
-          </Route>
-        </Route>
-
-        {/* Protected Admin Routes */}
-        <Route element={<ProtectedRoute adminOnly />}>
-          <Route element={<AppLayout />}>
-            <Route path="/admin/users" element={<AdminUsersPage />} />
           </Route>
         </Route>
 

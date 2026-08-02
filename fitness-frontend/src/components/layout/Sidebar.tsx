@@ -5,19 +5,13 @@ import {
   Activity,
   Bot,
   User,
-  Shield,
-  Dumbbell,
-  Apple,
-  TrendingUp,
   Settings,
-  LogOut,
-  Sparkles,
   Award,
+  Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useKeycloak } from "@/context/KeycloakContext";
-import { ThemeToggle } from "@/theme/theme-toggle";
 import { FitPulseLogo } from "@/components/common/FitPulseLogo";
 
 interface NavItem {
@@ -25,7 +19,6 @@ interface NavItem {
   href: string;
   icon: React.ElementType;
   badge?: string;
-  adminOnly?: boolean;
 }
 
 const mainNavItems: NavItem[] = [
@@ -63,19 +56,10 @@ const secondaryNavItems: NavItem[] = [
     href: "/settings",
     icon: Settings,
   },
-  {
-    title: "Admin Portal",
-    href: "/admin/users",
-    icon: Shield,
-    adminOnly: true,
-  },
 ];
 
 export function Sidebar({ className }: { className?: string }) {
   const location = useLocation();
-  const { user } = useAuthStore();
-
-  const isAdmin = user?.role === "ADMIN";
 
   return (
     <aside
@@ -167,7 +151,6 @@ export function Sidebar({ className }: { className?: string }) {
             Management
           </p>
           {secondaryNavItems.map((item) => {
-            if (item.adminOnly && !isAdmin) return null;
             const isActive = location.pathname.startsWith(item.href);
             const Icon = item.icon;
             return (
