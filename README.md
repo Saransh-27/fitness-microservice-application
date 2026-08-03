@@ -2,14 +2,14 @@
 
 [![Java](https://img.shields.io/badge/Java-21-orange.svg?style=for-the-badge&logo=openjdk)](https://www.oracle.com/java/)
 [![Spring Boot](https://img.shields.io/badge/Spring_Boot-4.1.0-6DB33F.svg?style=for-the-badge&logo=springboot)](https://spring.io/projects/spring-boot)
-[![Spring Security](https://img.shields.io/badge/Spring_Security-OAuth2_Resource_Server-6DB33F.svg?style=for-the-badge&logo=springsecurity&logoColor=white)](https://spring.io/projects/spring-security)
-[![Spring Cloud Gateway](https://img.shields.io/badge/Spring_Cloud-API_Gateway-6DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)](https://spring.io/projects/spring-cloud-gateway)
+[![Spring Security](https://img.shields.io/badge/Spring_Security-7.1.0-6DB33F.svg?style=for-the-badge&logo=springsecurity&logoColor=white)](https://spring.io/projects/spring-security)
 [![Spring Cloud](https://img.shields.io/badge/Spring_Cloud-2025.1.2-6DB33F.svg?style=for-the-badge&logo=spring)](https://spring.io/projects/spring-cloud)
 [![React](https://img.shields.io/badge/React-19-61DAFB.svg?style=for-the-badge&logo=react)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-8.1-646CFF.svg?style=for-the-badge&logo=vite)](https://vitejs.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4.3-38B2AC.svg?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com/)
 [![Keycloak](https://img.shields.io/badge/Keycloak-OAuth2%20%2F%20OIDC-4D90FE.svg?style=for-the-badge&logo=keycloak)](https://www.keycloak.org/)
 [![RabbitMQ](https://img.shields.io/badge/RabbitMQ-AMQP-FF6600.svg?style=for-the-badge&logo=rabbitmq)](https://www.rabbitmq.com/)
+[![Docker](https://img.shields.io/badge/Docker-4.77.0-2496ED.svg?style=for-the-badge&logo=docker)](https://spring.io/projects/docker)
 [![Google Gemini](https://img.shields.io/badge/AI-Google_Gemini_%26_Groq-8E75B5.svg?style=for-the-badge&logo=google)](https://ai.google.dev/)
 
 ---
@@ -20,7 +20,7 @@ An end-to-end, enterprise-grade **Cloud-Native Fitness Tracking & AI Health Insi
 
 The platform enables users to manage physical profiles, track workouts in real time, and receive **automated AI-driven health feedback** (powered by Google Gemini API and Groq LLMs) triggered asynchronously upon completing physical activities.
 
-<<<<<<< HEAD
+
 ---
 
 ## 🎥 Video Demonstration
@@ -35,7 +35,6 @@ https://github.com/user-attachments/assets/1d9ce160-d7b5-4cc3-8a7a-3359ba3b4549
 ## 🎥 Video Demonstration
 
 
->>>>>>> c1060e8 (Adding things)
 
 ---
 
