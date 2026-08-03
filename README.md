@@ -18,6 +18,16 @@ An end-to-end, enterprise-grade **Cloud-Native Fitness Tracking & AI Health Insi
 
 The platform enables users to manage physical profiles, track workouts in real time, and receive **automated AI-driven health feedback** (powered by Google Gemini API and Groq LLMs) triggered asynchronously upon completing physical activities.
 
+---
+
+## 🎥 Video Demonstration
+
+
+https://github.com/user-attachments/assets/1d9ce160-d7b5-4cc3-8a7a-3359ba3b4549
+
+
+
+
 
 ---
 
