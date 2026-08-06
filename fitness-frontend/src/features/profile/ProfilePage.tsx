@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useDemoStore } from "@/store/useDemoStore";
 import { userService } from "@/services/userService";
 import { toast } from "sonner";
 
@@ -27,6 +28,14 @@ export function ProfilePage() {
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (useDemoStore.getState().isDemoMode) {
+      toast.info("Profile updates are not available in demo mode.", {
+        description: "This feature requires the backend microservices to be running.",
+      });
+      return;
+    }
+
     if (!user?.id) {
       toast.error("User ID not found.");
       return;

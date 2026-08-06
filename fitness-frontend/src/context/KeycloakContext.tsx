@@ -9,7 +9,9 @@ import {
 } from "react";
 import keycloak, { getKeycloakConfig } from "../services/keycloak";
 import { useAuthStore } from "../store/useAuthStore";
+import { useDemoStore } from "../store/useDemoStore";
 import { userService } from "../services/userService";
+import { DEMO_USER } from "../services/demoData";
 import api, { createAuthenticatedApi } from "../services/api";
 import type { UserResponse } from "../types";
 
@@ -19,6 +21,7 @@ interface KeycloakContextValue {
   login: () => void;
   loginSocial: (provider: "google" | "github") => void;
   loginDirect: (username: string, password?: string) => Promise<boolean>;
+  loginDemo: () => void;
   registerDirect: (userDto: {
     username: string;
     email: string;
@@ -36,6 +39,7 @@ const KeycloakContext = createContext<KeycloakContextValue>({
   login: () => {},
   loginSocial: () => {},
   loginDirect: async () => false,
+  loginDemo: () => {},
   registerDirect: async () => false,
   logout: () => {},
   token: undefined,
@@ -83,6 +87,17 @@ export function KeycloakProvider({ children }: { children: ReactNode }) {
     if (isInitializedRef.current) return;
     isInitializedRef.current = true;
 
+    // If demo mode is already active (page refresh during demo), restore immediately
+    if (useDemoStore.getState().isDemoMode) {
+      const storeUser = useAuthStore.getState().user;
+      if (!storeUser) {
+        // Re-hydrate demo user if auth store was cleared
+        setAuth(DEMO_USER, DEMO_USER.keycloakId, "demo-token");
+      }
+      setInitialized(true);
+      return;
+    }
+
     keycloak
       .init({
         onLoad: "check-sso",
@@ -121,7 +136,7 @@ export function KeycloakProvider({ children }: { children: ReactNode }) {
           clearAuth();
         });
     };
-  }, [syncUser, clearAuth]);
+  }, [syncUser, clearAuth, setAuth]);
 
   const login = useCallback(() => {
     keycloak.login().catch((err) => {
@@ -138,6 +153,15 @@ export function KeycloakProvider({ children }: { children: ReactNode }) {
         console.error(`Keycloak ${provider} social login error:`, err);
       });
   }, []);
+
+  /**
+   * Demo Mode Login — bypasses Keycloak entirely.
+   * Sets a fake user in Zustand and enables demo mode flag.
+   */
+  const loginDemo = useCallback(() => {
+    useDemoStore.getState().enterDemoMode();
+    setAuth(DEMO_USER, DEMO_USER.keycloakId, "demo-token");
+  }, [setAuth]);
 
   const loginDirect = useCallback(
     async (username: string, password?: string): Promise<boolean> => {
@@ -276,6 +300,8 @@ export function KeycloakProvider({ children }: { children: ReactNode }) {
   );
 
   const logout = useCallback(() => {
+    // Always clear demo mode on logout
+    useDemoStore.getState().exitDemoMode();
     clearAuth();
     if (keycloak.authenticated) {
       keycloak.logout({ redirectUri: window.location.origin });
@@ -286,7 +312,8 @@ export function KeycloakProvider({ children }: { children: ReactNode }) {
 
   const storeIsAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const storeToken = useAuthStore((state) => state.token);
-  const isAuthenticated = storeIsAuthenticated || keycloak.authenticated;
+  const isDemoMode = useDemoStore((state) => state.isDemoMode);
+  const isAuthenticated = storeIsAuthenticated || keycloak.authenticated || isDemoMode;
 
   return (
     <KeycloakContext.Provider
@@ -296,6 +323,7 @@ export function KeycloakProvider({ children }: { children: ReactNode }) {
         login,
         loginSocial,
         loginDirect,
+        loginDemo,
         registerDirect,
         logout,
         token: storeToken || keycloak.token || undefined,

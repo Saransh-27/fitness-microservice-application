@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { ActivityType } from "@/types";
 import { activityService } from "@/services/activityService";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useDemoStore } from "@/store/useDemoStore";
 import { toast } from "sonner";
 import { Dumbbell, Flame, Timer, Sparkles, CheckCircle2 } from "lucide-react";
 
@@ -72,6 +73,15 @@ export function ActivityFormModal({
   const selectedType = watch("type");
 
   const onSubmit = async (values: ActivityFormValues) => {
+    // Block activity creation in demo mode
+    if (useDemoStore.getState().isDemoMode) {
+      toast.info("Creating activities is not available in demo mode.", {
+        description: "This feature requires the backend microservices to be running.",
+      });
+      onOpenChange(false);
+      return;
+    }
+
     try {
       // Use keycloakId as userid — this is what the backend Activity entity stores
       const userId = keycloakId || user?.keycloakId || user?.id;

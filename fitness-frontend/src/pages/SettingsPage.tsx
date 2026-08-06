@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useDemoStore } from "@/store/useDemoStore";
 import { useKeycloak } from "@/context/KeycloakContext";
 import { userService } from "@/services/userService";
 import { toast } from "sonner";
@@ -14,7 +15,16 @@ export function SettingsPage() {
   const [deleting, setDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
+  const { isDemoMode } = useDemoStore();
+
   const handleDeleteAccount = async () => {
+    if (isDemoMode) {
+      toast.info("Account deletion is not available in demo mode.", {
+        description: "This feature requires the backend microservices to be running.",
+      });
+      return;
+    }
+
     const targetId = keycloakId || user?.keycloakId || user?.id || user?.username;
     if (!targetId) return;
     try {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Lock, Mail, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { Lock, Mail, Eye, EyeOff, ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -11,7 +11,7 @@ import { FitPulseLogo } from "@/components/common/FitPulseLogo";
 
 export function LoginPage() {
   const navigate = useNavigate();
-  const { authenticated, loginDirect, loginSocial } = useKeycloak();
+  const { authenticated, loginDirect, loginSocial, loginDemo } = useKeycloak();
   const { isAuthenticated: storeAuth } = useAuthStore();
 
   const [username, setUsername] = useState("");
@@ -45,6 +45,14 @@ export function LoginPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDemoLogin = () => {
+    loginDemo();
+    toast.success("Welcome to Demo Mode!", {
+      description: "Exploring FitPulse OS with sample data.",
+    });
+    navigate("/dashboard");
   };
 
   return (
@@ -189,6 +197,23 @@ export function LoginPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Demo Mode Entry — Portfolio Showcase */}
+        <div className="relative">
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-[#D8FC00]/20 via-[#1E2BD9]/20 to-[#D8FC00]/20 blur-sm" />
+          <button
+            onClick={handleDemoLogin}
+            className="relative w-full flex items-center justify-center gap-3 h-12 rounded-2xl bg-[#0B0E17]/90 border border-[#D8FC00]/30 hover:border-[#D8FC00]/60 text-white transition-all duration-300 group active:scale-[0.98]"
+          >
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-[#D8FC00] group-hover:animate-pulse" />
+              <span className="text-xs font-extrabold tracking-wide">Explore Demo Mode</span>
+            </div>
+            <span className="text-[10px] text-slate-400 font-medium">
+              No login required
+            </span>
+          </button>
+        </div>
       </div>
     </div>
   );
